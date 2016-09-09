@@ -57,15 +57,29 @@ class Scraper
 	def self.scrape_series(category_url)
 		counter = 1
 		series = []
-		until self.get_series_data == []
+		until counter == "done" do
 			scrape_url = category_url + "/partials?start=#{counter}"
 			category = self.start_scrape(scrape_url)
-			series << self.get_series_data(category)
-			counter += 1
+			binding.pry
+			if !category.css.empty?
+				series << self.get_series_data(category)
+				counter += 1
+			else
+				counter = "done"
+			end
 		end
+		series
 	end
 
-	def self.get_series_data(category_url)
+	def self.get_series_data(category)
+		series = {
+			:name => category.css('article.podcast-active h1.title a').first.text,
+			:url => category.css('article.podcast-active h1.title a').first.attribute('href').value,
+			:station => category.css('article.podcast-active h3.org a').first.text,
+			:station_url => "http://www.npr.org" + category.css('article.podcast-active h3.org a').first.attribute('href').value
+		}
+	end
+
 
 
 
