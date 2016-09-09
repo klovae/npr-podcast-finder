@@ -74,15 +74,18 @@ class Scraper
 
 	def self.get_series_data(category)
 		series = {
-			:name => category.css('article.podcast-active h1.title a').first.text,
-			:url => category.css('article.podcast-active h1.title a').first.attribute('href').value,
+			:series_name => category.css('article.podcast-active h1.title a').first.text,
+			:series_url => category.css('article.podcast-active h1.title a').first.attribute('href').value,
 			:station => category.css('article.podcast-active h3.org a').first.text,
 			:station_url => "http://www.npr.org" + category.css('article.podcast-active h3.org a').first.attribute('href').value
 		}
 	end
 
-
-
+	def self.get_series_description(series_url)
+		page = self.start_scrape(series_url)
+		description = page.css('div.detail-overview-content.col2 p').text
+		description.gsub(page.css('div.detail-overview-content.col2 p a').text, "")
+	end
 
 
 end
