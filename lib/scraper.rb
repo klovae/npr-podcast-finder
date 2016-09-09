@@ -60,9 +60,10 @@ class Scraper
 		until counter == "done" do
 			scrape_url = category_url + "/partials?start=#{counter}"
 			category = self.start_scrape(scrape_url)
-			binding.pry
-			if !category.css.empty?
-				series << self.get_series_data(category)
+			if !category.css('article').first.nil?
+				if !series.include?(self.get_series_data(category))
+					series << self.get_series_data(category)
+				end
 				counter += 1
 			else
 				counter = "done"
