@@ -82,10 +82,33 @@ class Scraper
 	end
 
 	def self.get_series_description(series_url)
-		page = self.start_scrape(series_url)
-		description = page.css('div.detail-overview-content.col2 p').text
-		description.gsub(page.css('div.detail-overview-content.col2 p a').text, "")
+		series = self.start_scrape(series_url)
+		description = series.css('div.detail-overview-content.col2 p').text
+		description.gsub(series.css('div.detail-overview-content.col2 p a').text, "")
 	end
 
+	#individual episode methods
 
+	def self.get_episodes(series_url)
+		episode_list = []
+		series = self.start_scrape(series_url)
+		episodes = series.css('section.podcast-section.episode-list article.item.podcast-episode')
+		episodes.each do |episode|
+			#for an edge case where sometimes the first podcast has no file associated with it
+			if !episode.css('div.audio-module-tools').empty?
+				description = episode.css('div.audio-module-tools ul li a').attribute('href').value
+			else
+				description = nil
+			end
+			#end edge case
+			episode_data = {
+				:date => episode.css('time').attribute('datetime').value,
+				:title => episode.css('h2.title').text.gsub(/\n+\s*/, ""),
+				:description => episode.css('p.teaser').text.gsub(episode.css('p.teaser time').text, "").gsub(/\n+\s*/, ""),
+				:download_link => description
+			}
+			episode_list << episode_data unless description.nil? #unless is for edge case
+		end
+		episode_list
+	end
 end
