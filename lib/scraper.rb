@@ -52,18 +52,22 @@ class Scraper
 		categories
 	end
 
-	# podcast scraping
+	# series scraping
 
-	def self.scrape_podcasts(category_url)
-		category = self.start_scrape(category_url)
-		self.get_podcast_data(category)
+	def self.scrape_series(category_url)
+		counter = 1
+		series = []
+		until self.get_series_data == []
+			scrape_url = category_url + "/partials?start=#{counter}"
+			category = self.start_scrape(scrape_url)
+			series << self.get_series_data(category)
+			counter += 1
+		end
 	end
 
-	#helper methods for podcast scraping
+	def self.get_series_data(category_url)
 
-	def self.get_podcast_data(category)
-		podcasts = category.css('section#podcast-section-core article.podcast-active')
-	end
+
 
 
 end
