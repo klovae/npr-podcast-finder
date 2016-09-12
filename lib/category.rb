@@ -3,7 +3,6 @@ class Category
 
   attr_accessor :name, :url
 
-
   @@all = []
 
   def initialize(category_hash)
@@ -17,5 +16,12 @@ class Category
 
   def self.all
     @@all
+  end
+
+  def self.create_from_collection(category_array)
+    category_array.each {|category_hash| self.new(category_hash)}
+  end
+
+  def add_podcasts
   end
 end

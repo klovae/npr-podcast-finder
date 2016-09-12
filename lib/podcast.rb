@@ -1,23 +1,16 @@
 class Podcast
   extend Concerns::Findable
 
-  attr_accessor :name
+  attr_accessor :name, :url
   attr_reader :station, :category, :description
 
   @@all = []
 
-  def initialize(name, station = nil, category = nil, description = nil)
-    @name = name
-    if station.nil? == false
-      self.station
-    end
-    if category.nil? == false
-      self.category = category
-    end
-    if description.nil? == false
-      self.description = description
-    end
+  def initialize(podcast_hash)
+    @name = podcast_hash(:name)
+    @url = podcast_hash(:url)
     @episodes = []
+    self.save
   end
 
   def category=(category)
