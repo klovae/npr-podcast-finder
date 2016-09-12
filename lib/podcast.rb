@@ -7,8 +7,8 @@ class Podcast
   @@all = []
 
   def initialize(podcast_hash)
-    @name = podcast_hash(:name)
-    @url = podcast_hash(:url)
+    @name = podcast_hash[:name]
+    @url = podcast_hash[:url]
     @episodes = []
     self.save
   end
@@ -30,11 +30,6 @@ class Podcast
     @description = description
   end
 
-
-  def self.create(name)
-    podcast = self.new(name)
-    podcast.save
-  end
 
   def save
     @@all << self

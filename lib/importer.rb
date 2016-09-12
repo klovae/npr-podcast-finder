@@ -1,17 +1,35 @@
 class DataImporter
 
-  def add_categories(index_url)
+  def self.add_categories(index_url)
     category_data = Scraper.scrape_categories(index_url)
     Category.create_from_collection(category_data)
   end
 
-  def add_podcasts
+  def self.add_podcast_data
     Category.all.each do |category|
-      Scraper.scrape_podcasts(category.url)
+      podcast_array = Scraper.scrape_podcasts(category.url)
+
     end
   end
 
-  def add_stations
+  def self.add_stations(podcast_array)
+    podcast_array.each do |podcast_hash|
+      station = podcast_hash[:name]
+      if !Station.find_by_name(station).nil?
+        new_station = Station.new(podcast_hash)
+      end
+    end
+  end
+
+
+
+  end
+
+  def self.add_podcasts(podcast_array, category)
+    podcast_array.each do |podcast_hash|
+      podcast = Podcast.new(podcast_hash)
+      podcast.category = category.name
+    end
   end
 
   def add_episodes
