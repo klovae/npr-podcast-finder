@@ -22,6 +22,4 @@ class Category
     category_array.each {|category_hash| self.new(category_hash)}
   end
 
-  def add_podcasts
-  end
 end
