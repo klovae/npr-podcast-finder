@@ -26,6 +26,7 @@ class DataImporter
     podcast_array.each do |podcast_hash|
       podcast = Podcast.new(podcast_hash)
       podcast.category = category.name
+      podcast.station = Station.find_by_name(podcast_hash[:station])
     end
   end
 

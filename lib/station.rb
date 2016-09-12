@@ -13,8 +13,15 @@ class Station
     self.save
   end
 
+  def add_podcast(podcast)
+    if podcast.class == Podcast
+      @podcasts << podcast
+    end
+  end
+
   def save
     @@all << self
+  end
 
   def self.all
     @@all

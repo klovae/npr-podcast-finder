@@ -1,12 +1,6 @@
 require 'bundler/setup'
 Bundler.require(:default, :development, :test)
 
-require_relative '../lib/scraper.rb'
-require_relative '../lib/station.rb'
-require_relative '../lib/episode.rb'
-require_relative '../lib/podcast.rb'
-require_relative '../lib/category.rb'
-
 module Concerns
   module Findable
     def find_by_name(name)
@@ -14,3 +8,11 @@ module Concerns
     end
   end
 end
+
+
+require_relative '../lib/scraper.rb'
+require_relative '../lib/station.rb'
+require_relative '../lib/episode.rb'
+require_relative '../lib/podcast.rb'
+require_relative '../lib/category.rb'
+require_relative '../lib/importer.rb'

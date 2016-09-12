@@ -60,7 +60,7 @@ class Scraper
 		until counter == "done" do
 			scrape_url = category_url + "/partials?start=#{counter}"
 			category = self.start_scrape(scrape_url)
-			if !category.css('article').first.nil?
+			if !category.css('article.podcast-active').first.nil?
 				if !podcasts.include?(self.get_podcast_data(category))
 					podcasts << self.get_podcast_data(category)
 				end

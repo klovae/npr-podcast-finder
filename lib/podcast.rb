@@ -2,7 +2,7 @@ class Podcast
   extend Concerns::Findable
 
   attr_accessor :name, :url
-  attr_reader :station, :category, :description
+  attr_reader :station, :category, :description, :episodes
 
   @@all = []
 
@@ -22,6 +22,7 @@ class Podcast
   def station=(station)
     if station.class == Station
       @station = station
+      station.add_podcast(self)
     end
   end
 
@@ -30,9 +31,9 @@ class Podcast
     @description = description
   end
 
-
   def save
     @@all << self
+  end
 
   def self.all
     @@all
