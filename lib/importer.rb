@@ -6,6 +6,9 @@ class DataImporter
   end
 
   def add_podcasts
+    Category.all.each do |category|
+      Scraper.scrape_podcasts(category.url)
+    end
   end
 
   def add_stations

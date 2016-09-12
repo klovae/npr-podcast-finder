@@ -52,28 +52,28 @@ class Scraper
 		categories
 	end
 
-	# series scraping
+	# podcasts scraping
 
-	def self.scrape_series(category_url)
+	def self.scrape_podcasts(category_url)
 		counter = 1
-		series = []
+		podcasts = []
 		until counter == "done" do
 			scrape_url = category_url + "/partials?start=#{counter}"
 			category = self.start_scrape(scrape_url)
 			if !category.css('article').first.nil?
-				if !series.include?(self.get_series_data(category))
-					series << self.get_series_data(category)
+				if !podcasts.include?(self.get_podcast_data(category))
+					podcasts << self.get_podcast_data(category)
 				end
 				counter += 1
 			else
 				counter = "done"
 			end
 		end
-		series
+		podcasts
 	end
 
-	def self.get_series_data(category)
-		series = {
+	def self.get_podcast_data(category)
+		podcast = {
 			:name => category.css('article.podcast-active h1.title a').first.text,
 			:url => category.css('article.podcast-active h1.title a').first.attribute('href').value,
 			:station => category.css('article.podcast-active h3.org a').first.text,
@@ -81,18 +81,18 @@ class Scraper
 		}
 	end
 
-	def self.get_series_description(series_url)
-		series = self.start_scrape(series_url)
-		description = series.css('div.detail-overview-content.col2 p').text
-		description.gsub(series.css('div.detail-overview-content.col2 p a').text, "")
+	def self.get_podcast_description(podcast_url)
+		podcast = self.start_scrape(podcast_url)
+		description = podcasts.css('div.detail-overview-content.col2 p').text
+		description.gsub(podcasts.css('div.detail-overview-content.col2 p a').text, "")
 	end
 
 	#individual episode methods
 
-	def self.get_episodes(series_url)
+	def self.get_episodes(podcast_url)
 		episode_list = []
-		series = self.start_scrape(series_url)
-		episodes = series.css('section.podcast-section.episode-list article.item.podcast-episode')
+		podcast = self.start_scrape(podcast_url)
+		episodes = podcast.css('section.podcast-section.episode-list article.item.podcast-episode')
 		episodes.each do |episode|
 			#for an edge case where sometimes the first podcast has no file associated with it
 			if !episode.css('div.audio-module-tools').empty?
