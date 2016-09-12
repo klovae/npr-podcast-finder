@@ -8,7 +8,8 @@ class DataImporter
   def self.add_podcast_data
     Category.all.each do |category|
       podcast_array = Scraper.scrape_podcasts(category.url)
-
+      self.add_stations(podcast_array)
+      self.add_podcasts(podcast_array)
     end
   end
 
@@ -19,10 +20,6 @@ class DataImporter
         new_station = Station.new(podcast_hash)
       end
     end
-  end
-
-
-
   end
 
   def self.add_podcasts(podcast_array, category)
