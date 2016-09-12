@@ -23,7 +23,7 @@ class Podcast
   def category=(category)
     if category.class == Category
       @category = category
-    end    
+    end
   end
 
   def station=(station)
@@ -49,7 +49,5 @@ class Podcast
   def self.all
     @@all
   end
-
-
 
 end
