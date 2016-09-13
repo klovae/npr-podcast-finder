@@ -16,6 +16,7 @@ class Station
   def add_podcast(podcast)
     if podcast.class == Podcast
       @podcasts << podcast
+      podcast.station = self
     end
   end
 
