@@ -59,12 +59,15 @@ class Scraper
 		podcasts = []
 		until counter == "done" do
 			scrape_url = category_url + "/partials?start=#{counter}"
-			category = self.start_scrape(scrape_url)
-			if !category.css('article.podcast-active').first.nil?
-				if !podcasts.include?(self.get_podcast_data(category))
-					podcasts << self.get_podcast_data(category)
+			podcast_list = self.start_scrape(scrape_url)
+			if !podcast_list.css('article').first.nil?
+				active_podcasts = podcast_list.css('article.podcast-active')
+				active_podcasts.each do |podcast|
+					if !podcasts.include?(self.get_podcast_data(podcast))
+						podcasts << self.get_podcast_data(podcast)
+					end
 				end
-				counter += 1
+				counter += podcast_list.css('article').size
 			else
 				counter = "done"
 			end
@@ -72,12 +75,12 @@ class Scraper
 		podcasts
 	end
 
-	def self.get_podcast_data(category)
-		podcast = {
-			:name => category.css('article.podcast-active h1.title a').first.text,
-			:url => category.css('article.podcast-active h1.title a').first.attribute('href').value,
-			:station => category.css('article.podcast-active h3.org a').first.text,
-			:station_url => "http://www.npr.org" + category.css('article.podcast-active h3.org a').first.attribute('href').value
+	def self.get_podcast_data(podcast)
+		data = {
+			:name => podcast.css('h1.title a').text,
+			:url => podcast.css('h1.title a').attribute('href').value,
+			:station => podcast.css('h3.org a').text,
+			:station_url => "http://www.npr.org" + podcast.css('h3.org a').attribute('href').value
 		}
 	end
 
