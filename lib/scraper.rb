@@ -86,8 +86,13 @@ class Scraper
 
 	def self.get_podcast_description(podcast_url)
 		podcast = self.start_scrape(podcast_url)
-		description = podcasts.css('div.detail-overview-content.col2 p').text
-		description.gsub(podcasts.css('div.detail-overview-content.col2 p a').text, "")
+		if podcast.css('div.detail-overview-content.col2 p').size == 1
+			description = podcast.css('div.detail-overview-content.col2 p').text
+			description.gsub(podcast.css('div.detail-overview-content.col2 p a').text, "")
+			description.gsub("\"", "'")
+		elsif podcast.css('div.detail-overview-content.col2 p') > 1
+			description = podcast.css('div.detail-overview-content.col2 p').first.text
+		end
 	end
 
 	#individual episode methods
