@@ -102,21 +102,35 @@ class Scraper
 		podcast = self.start_scrape(podcast_url)
 		episodes = podcast.css('section.podcast-section.episode-list article.item.podcast-episode')
 		episodes.each do |episode|
-			#for an edge case where sometimes the first podcast has no file associated with it
-			if !episode.css('div.audio-module-tools').empty?
-				description = episode.css('div.audio-module-tools ul li a').attribute('href').value
-			else
-				description = nil
-			end
-			#end edge case
-			episode_data = {
-				:date => episode.css('time').attribute('datetime').value,
-				:title => episode.css('h2.title').text.gsub(/\n+\s*/, ""),
-				:description => episode.css('p.teaser').text.gsub(episode.css('p.teaser time').text, "").gsub(/\n+\s*/, ""),
-				:download_link => description
-			}
-			episode_list << episode_data unless description.nil? #unless is for edge case
+			episode_data = self.get_episode_data(episode)
+			episode_list << episode_data unless episode_data[:download_link].nil? #unless is for edge case
 		end
 		episode_list
 	end
+
+	def self.get_episode_data(episode)
+		#for an edge case where sometimes the first podcast has no file associated with it
+		if !episode.css('div.audio-module-tools').empty?
+			link = episode.css('div.audio-module-tools ul li a').attribute('href').value
+		else
+			link = nil
+		end
+		if episode.css('p').count > 1
+			paragraphs = episode.css('p')
+			p1 = paragraphs[0].text.gsub(episode.css('p.teaser time').text, "").gsub(/\n+\s*/, "").gsub("\"", "'")
+			p2 = paragraphs[1].text.gsub(/\n+\s*/, "").gsub("\"", "'")
+			p3 = paragraphs[2].text.gsub(/\n+\s*/, "").gsub("\"", "'")
+			description = p1 + p2 + p3 + " Read more online >>"
+		else
+			description = episode.css('p.teaser').text.gsub(episode.css('p.teaser time').text, "").gsub(/\n+\s*/, "").gsub("\"", "'")
+		end
+		#end edge case
+		episode_data = {
+			:date => episode.css('time').attribute('datetime').value,
+			:title => episode.css('h2.title').text.gsub(/\n+\s*/, "").gsub("\"", "'"),
+			:description => description,
+			:download_link => link
+		}
+	end
+
 end
