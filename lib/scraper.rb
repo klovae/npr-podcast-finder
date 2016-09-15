@@ -112,8 +112,10 @@ class Scraper
 		#for an edge case where sometimes the first podcast has no file associated with it
 		if !episode.css('div.audio-module-tools').empty?
 			link = episode.css('div.audio-module-tools ul li a').attribute('href').value
+			length = episode.css('div.audio-module-controls b.audio-module-listen-duration').text[/(\d\d:\d\d)/]
 		else
 			link = nil
+			length = nil
 		end
 		if episode.css('p').count > 1
 			paragraphs = episode.css('p')
@@ -128,6 +130,7 @@ class Scraper
 		episode_data = {
 			:date => episode.css('time').attribute('datetime').value,
 			:title => episode.css('h2.title').text.gsub(/\n+\s*/, "").gsub("\"", "'"),
+			:length => length,
 			:description => description,
 			:download_link => link
 		}

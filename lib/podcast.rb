@@ -33,7 +33,7 @@ class Podcast
 
   def show_episodes
     self.episodes.each do |episode|
-      puts "#{episode.name} - #{episode.date}"
+      puts "#{episode.name} - #{episode.date} - #{episode.length}"
     end
   end
 
