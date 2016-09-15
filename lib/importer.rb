@@ -13,6 +13,8 @@ class DataImporter
     end
   end
 
+  #helper methods for import_podcast_data
+
   def self.import_stations(podcast_array)
     podcast_array.each do |podcast_hash|
       check_station = podcast_hash[:station]
@@ -37,15 +39,13 @@ class DataImporter
     end
   end
 
-  def self.import_descriptions
-    Podcasts.all.each do |podcast|
-      podcast.description = Scraper.get_podcast_data(podcast.url)
-    end
+  def self.import_description(podcast)
+    podcast.description = Scraper.get_podcast_description(podcast.url)
   end
 
   def self.import_episodes(podcast)
     episode_list = Scraper.get_episodes(podcast.url)
-    episodes_list.each do |episode_hash|
+    episode_list.each do |episode_hash|
       episode = Episode.new(episode_hash)
       podcast.add_episode(episode)
     end

@@ -1,8 +1,7 @@
 class Episode
   extend Concerns::Findable
 
-  attr_accessor :date, :title, :description, :download_link, :length
-  attr_reader :podcast
+  attr_accessor :date, :title, :description, :download_link, :length, :podcast
 
   @@all = []
 
