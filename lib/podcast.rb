@@ -18,7 +18,11 @@ class Podcast
     if category.class == Category && !self.categories.include?(category)
       @categories << category
     end
-    category.podcasts << self
+  end
+
+  def add_episode(episode)
+    self.episodes << episode
+    episode.podcast = self
   end
 
   def station=(station)

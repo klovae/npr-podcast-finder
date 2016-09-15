@@ -27,12 +27,12 @@ class DataImporter
       check_podcast = podcast_hash[:name]
       if Podcast.find_by_name(check_podcast).nil?
         podcast = Podcast.new(podcast_hash)
-        podcast.categories << category
+        category.add_podcast(podcast)
         station = Station.find_by_name(podcast_hash[:station])
         station.add_podcast(podcast)
       else
         podcast = Podcast.find_by_name(check_podcast)
-        podcast.categories << category
+        category.add_podcast(podcast)
       end
     end
   end
@@ -48,7 +48,6 @@ class DataImporter
     episodes_list.each do |episode_hash|
       episode = Episode.new(episode_hash)
       podcast.add_episode(episode)
-      episode.podcast = podcast
     end
     podcast.episodes
   end

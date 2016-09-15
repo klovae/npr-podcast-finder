@@ -1,12 +1,13 @@
 class Category
   extend Concerns::Findable
 
-  attr_accessor :name, :url
+  attr_accessor :name, :url, :podcasts
 
   @@all = []
 
   def initialize(category_hash)
     category_hash.each {|key, value| self.send("#{key}=", value)}
+    @podcasts = []
     self.save
   end
 
@@ -16,6 +17,11 @@ class Category
 
   def self.all
     @@all
+  end
+
+  def add_podcast(podcast)
+    self.podcasts << podcast
+    podcast.add_category(self)
   end
 
   def self.create_from_collection(category_array)
