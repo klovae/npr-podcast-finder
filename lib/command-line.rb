@@ -7,7 +7,7 @@ class CommandLineInterface
   end
 
   def call
-    #self.startup_sequence
+    self.startup_sequence
     self.start_menu
     choice = self.get_input
     case choice
@@ -98,9 +98,10 @@ class CommandLineInterface
     puts "Podcast Categories:".colorize(:light_blue)
     Category.display_categories
     puts "Enter the number of the category you'd like to explore (1-15)".colorize(:light_blue)
-    input = self.get_input
-    if input.class == Fixnum
-      self.browse_category(input)
+    input = gets.strip
+    choice = self.parse_input(input)
+    if choice.class == Fixnum
+      self.browse_category(choice)
     end
   end
 
@@ -112,7 +113,8 @@ class CommandLineInterface
     puts "Enter the number of the podcast you'd like to check out (#{counter + 1}-#{counter + 5})".colorize(:light_blue)
     puts "Type 'back' to return to the category list".colorize(:light_blue)
     puts "Type 'more' to see the next 5 podcasts".colorize(:light_blue)
-    choice = self.get_input
+    input = gets.strip
+    choice = self.parse_input(input)
     case choice
     when "BACK"
       self.browse_podcast_categories
