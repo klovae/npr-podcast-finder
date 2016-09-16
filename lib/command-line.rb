@@ -8,23 +8,23 @@ class CommandLineInterface
 
   def call
     startup_sequence
-    until continue == "exit" do
-      start_menu
+    self.start_menu
+    until @continue == "exit" do
       input = gets.strip.upcase
       case input
-      when input == "HELP"
-        help
-      when input == "MENU"
-        start_menu
-      when input == "EXIT"
-        continue = "exit"
+      when "HELP"
+        self.help
+      when "MENU"
+        self.start_menu
+      when "EXIT"
+        @continue = "exit"
       end
     end
-    "Thanks for using the Command Line Podcast Finder!"
+    puts "Thanks for using the Command Line Podcast Finder!"
   end
 
   def help
-    puts "Help: Commands"
+    puts "Help: Commands".colorize(:light_blue)
     puts "--Type 'exit' at any time to quit the browser"
     puts "--Type 'menu' at any time to go back to the main menu"
     puts "--Type 'help' if you need a quick reminder about the commands"
@@ -48,13 +48,13 @@ class CommandLineInterface
   end
 
   def start_menu
-    puts "Main Menu:"
+    puts "Main Menu:".colorize(:light_blue)
     puts "To get started, choose an option below (1-4):"
     puts "(1) Browse podcast categories"
     puts "(2) Browse podcasts by alphabet"
     puts "(3) Search podcasts"
     puts "(4) Discover podcasts (see a random selection)"
-    puts "Or, type 'help' to see a list of commands"
+    puts "Or, type 'help' to see a list of commands".
   end
 
   def start_import
