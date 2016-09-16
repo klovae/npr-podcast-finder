@@ -7,9 +7,9 @@ class CommandLineInterface
   end
 
   def call
-    startup_sequence
+    self.startup_sequence
+    self.start_menu
     until continue == "exit" do
-      start_menu
       input = gets.strip.upcase
       case input
       when input == "HELP"
