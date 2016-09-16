@@ -7,7 +7,7 @@ class CommandLineInterface
   end
 
   def call
-    self.startup_sequence
+    #self.startup_sequence
     self.start_menu
     choice = self.get_input
     case choice
@@ -53,20 +53,6 @@ class CommandLineInterface
     else
       "STUCK"
     end
-    startup_sequence
-    self.start_menu
-    until @continue == "exit" do
-      input = gets.strip.upcase
-      case input
-      when "HELP"
-        self.help
-      when "MENU"
-        self.start_menu
-      when "EXIT"
-        @continue = "exit"
-      end
-    end
-    puts "Thanks for using the Command Line Podcast Finder!"
   end
 
   def help
@@ -79,7 +65,7 @@ class CommandLineInterface
   def startup_sequence
     puts "Setting up your command line podcast finder...".colorize(:light_red)
     puts "Estimated time: less than one minute.".colorize(:light_red)
-    start_import
+    self.start_import
     puts ".".colorize(:light_red)
     sleep(1)
     puts ".".colorize(:light_yellow)
@@ -100,7 +86,7 @@ class CommandLineInterface
     puts "(2) Browse podcasts by alphabet"
     puts "(3) Search podcasts"
     puts "(4) Discover podcasts (see a random selection)"
-    puts "Or, type 'help' to see a list of commands".
+    puts "Or, type 'help' to see a list of commands."
   end
 
   def start_import

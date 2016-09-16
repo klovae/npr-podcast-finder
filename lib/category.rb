@@ -29,18 +29,18 @@ class Category
   end
 
   def self.display_categories
-   self.all.each_with_index do |category, index|
-     puts "(#{index + 1}) #{category.name}"
-   end
- end
-
- def display_podcasts(number)
-  counter = 1
-  until counter > number do
-    podcast = self.podcasts[counter - 1]
-    puts "(#{counter}) #{podcast.name}"
-    counter += 1
+    self.all.each_with_index do |category, index|
+      puts "(#{index + 1}) #{category.name}"
+    end
   end
-end
 
+  def display_podcasts(number)
+    counter = 1 + number
+    until counter > (number + 5) do
+      podcast = self.podcasts[counter - 1]
+      puts "(#{counter}) #{podcast.name}"
+      counter += 1
+    end
+  end
+  
 end
