@@ -1,6 +1,6 @@
 class CommandLineInterface
 
-  attr_accessor :continue, :podcast_counter, :category_choice, :input
+  attr_accessor :continue, :podcast_counter, :category_choice, :input, :podcast_choice, :episode_choice
 
   def initialize(continue = "yes")
     @continue = continue
@@ -61,7 +61,7 @@ class CommandLineInterface
   def parse_input(input)
     if input.match(/^\d+$/)
       @input = input.to_i
-    elsif input.upcase == "HELP" || input.upcase == "MENU" || input.upcase == "EXIT" || input.upcase == "MORE" || input.upcase == "BACK"
+    elsif input.upcase == "HELP" || input.upcase == "MENU" || input.upcase == "EXIT" || input.upcase == "MORE" || input.upcase == "BACK" || input.upcase == "PODCASTS"
       @input = input.upcase
     else
       @input = "STUCK"
@@ -178,6 +178,7 @@ class CommandLineInterface
       puts "Type 'menu' to see the category list".colorize(:light_blue)
       self.get_input
       if @input.class == Fixnum && @input <= @podcast_choice.episodes.count
+        @episode_choice = @podcast_choice.episodes[@input-1]
         self.display_episode_info
       elsif @input == "BACK"
         @podcast_counter = 0
@@ -202,7 +203,25 @@ class CommandLineInterface
   end
 
   def display_episode_info
-
+    puts ""
+    @episode_choice.list_data
+    puts ""
+    puts "Options:"
+    puts "Type 'back' to return to episode listing for #{@podcast_choice.name}".colorize(:light_blue)
+    puts "Type 'podcasts' to return to the podcast list for #{@category_choice.name}".colorize(:light_blue)
+    puts "Type 'menu' to see the category list".colorize(:light_blue)
+    self.get_input
+    if @input == "BACK"
+      @episode_choice = nil
+      self.display_episode_list
+    elsif @input == "PODCASTS"
+      @podcast_counter = 0
+      @podcast_choice = nil
+      @episode_choice = nil
+      self.browse_category
+    else
+      self.proceed_based_on_input
+    end
   end
 
 end
