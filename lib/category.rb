@@ -28,13 +28,13 @@ class Category
     category_array.each {|category_hash| self.new(category_hash)}
   end
 
-  def self.display_categories
+  def self.list_categories
     self.all.each_with_index do |category, index|
       puts "(#{index + 1}) #{category.name}"
     end
   end
 
-  def display_podcasts(number)
+  def list_podcasts(number)
     counter = 1 + number
     until counter > (number + 5) do
       podcast = self.podcasts[counter - 1]
@@ -42,5 +42,5 @@ class Category
       counter += 1
     end
   end
-  
+
 end
