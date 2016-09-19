@@ -144,10 +144,15 @@ class CommandLineInterface
   end
 
   def display_podcasts
-    @category_choice.list_podcasts(@podcast_counter)
-    puts "Enter the number of the podcast you'd like to check out (#{@podcast_counter + 1}-#{@podcast_counter + 5})".colorize(:light_blue)
-    puts "Type 'back' to return to the category list".colorize(:light_blue)
-    puts "Type 'more' to see the next 5 podcasts".colorize(:light_blue)
+    listed_podcasts = @category_choice.list_podcasts(@podcast_counter)
+    if listed_podcasts == 5
+      puts "Enter the number of the podcast you'd like to check out (1-#{@podcast_counter + listed_podcasts})".colorize(:light_blue)
+      puts "Type 'back' to return to the category list".colorize(:light_blue)
+      puts "Type 'more' to see the next 5 podcasts".colorize(:light_blue)
+    else
+      puts "That's all the podcasts for this category!".colorize(:light_blue)
+      puts "Choose a podcast (1-#{@podcast_counter + listed_podcasts}) to get details or type 'back' to return to the category list".colorize(:light_blue)
+    end
   end
 
 end
