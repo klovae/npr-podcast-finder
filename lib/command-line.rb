@@ -80,12 +80,8 @@ class CommandLineInterface
       self.proceed_based_on_input
     when "MENU"
       self.browse_all_categories
-    when "BACK" || "MORE"
-      @input
     when "EXIT"
       @continue = "EXIT"
-    when @input.class == Fixnum
-      @input
     end
   end
 
