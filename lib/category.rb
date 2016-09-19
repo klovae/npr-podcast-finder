@@ -38,7 +38,7 @@ class Category
     counter = 1 + number
     podcast_list_count = 0
     until counter > (number + 5) do
-      if !self.podcasts[counter - 1].nil?
+      if counter <= self.podcasts.size
         podcast = self.podcasts[counter - 1]
         puts "(#{counter}) #{podcast.name}"
         counter += 1

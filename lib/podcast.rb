@@ -31,15 +31,22 @@ class Podcast
     end
   end
 
-  def show_episodes
-    self.episodes.each do |episode|
-      puts "#{episode.name} - #{episode.date} - #{episode.length}"
+  def list_episodes
+    self.episodes.each_with_index do |episode, index|
+      puts "(#{index + 1}) #{episode.name} - #{episode.date} - #{episode.length}"
     end
   end
 
   def description=(description)
     @description = description
   end
+
+  def list_data
+    puts "#{self.name}".colorize(:light_blue)
+    puts "Station:".colorize(:light_blue) + "#{self.station.name}"
+    puts "Description:".colorize(:light_blue) + " #{self.description}"
+  end
+
 
   def save
     @@all << self

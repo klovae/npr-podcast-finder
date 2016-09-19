@@ -43,7 +43,7 @@ class Scraper
 						podcasts << self.get_podcast_data(podcast)
 					end
 				end
-				counter += podcast_list.css('article').size
+				counter += @index.css('article').size
 			else
 				counter = "done"
 			end

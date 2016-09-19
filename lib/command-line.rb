@@ -100,6 +100,7 @@ class CommandLineInterface
     self.proceed_based_on_input
     if @input.class == Fixnum && @input.between?(1, 16)
       @category_choice = Category.all[@input - 1]
+      DataImporter.import_podcast_data(@category_choice)
       self.browse_category
     else
       self.proceed_based_on_input
@@ -110,16 +111,16 @@ class CommandLineInterface
     puts "Category: #{@category_choice.name}".colorize(:light_blue)
     self.display_podcasts
     self.get_input
-    self.proceed_based_on_input
-    case @input
-    when "BACK"
+    if @input.class == Fixnum
+      self.display_podcast_info
+    elsif @input == "BACK"
       @category_choice = nil
       self.proceed_based_on_input
-    when "MORE"
+    elsif @input == "MORE"
       @podcast_counter += 5
       self.browse_category
-    when @input.class == Fixnum
-      self.display_podcast_info
+    else
+      self.proceed_based_on_input
     end
   end
 
@@ -137,9 +138,26 @@ class CommandLineInterface
 
 #methods for getting details on a specific podcast
   def display_podcast_info
-    if !@category_choice.podcasts[@input - 1].nil?
+    if @input <= @category_choice.podcasts.size
       @podcast_choice = @category_choice.podcasts[@input - 1]
+      DataImporter.import_description(@podcast_choice)
       @podcast_choice.list_data
+      puts "Choose an option below to proceed:".colorize(:light_blue)
+      puts "(1) Get episode list"
+      puts "(2) Go back to podcast listing for #{@category_choice.name}"
+      puts "(3) Return to main category menu"
+      self.get_input
+      if @input == 1
+        @podcast_choice.list_episodes
+      elsif @input == 2
+        @podcast_counter = 0
+        self.browse_category
+      elsif @input == 3
+        self.browse_all_categories
+      else
+        self.proceed_based_on_input
+      end
+
     else
       puts "Sorry, that's not a podcast. Please enter '1-#{@podcast_counter + listed_podcasts}' to get more details or type 'back' to go back to the category list".colorize(:light_blue)
       self.get_input
@@ -150,7 +168,5 @@ class CommandLineInterface
       end
     end
   end
-
-
 
 end
