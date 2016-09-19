@@ -5,12 +5,10 @@ class DataImporter
     Category.create_from_collection(category_data)
   end
 
-  def self.import_podcast_data
-    Category.all.each do |category|
-      podcast_array = Scraper.scrape_podcasts(category.url)
-      self.import_stations(podcast_array)
-      self.import_podcasts(podcast_array, category)
-    end
+  def self.import_podcast_data(category)
+    podcast_array = Scraper.scrape_podcasts(category.url)
+    self.import_stations(podcast_array)
+    self.import_podcasts(podcast_array, category)
   end
 
   #helper methods for import_podcast_data
