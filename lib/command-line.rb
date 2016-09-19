@@ -38,6 +38,51 @@ class CommandLineInterface
     end
   end
 
+  #methods needed for startup
+
+  def startup_sequence
+    puts "Setting up your command line podcast finder...".colorize(:light_red)
+    puts "Estimated time: less than one minute.".colorize(:light_red)
+    self.start_import
+    puts ".".colorize(:light_red)
+    sleep(1)
+    puts ".".colorize(:light_yellow)
+    sleep(1)
+    puts ".".colorize(:light_green)
+    sleep(1)
+    puts "Setup complete.".colorize(:light_green)
+    sleep(1)
+    puts "Welcome to the Command Line Podcast Finder!"
+    puts "You can use this command line gem to find and listen to interesting podcasts produced by NPR and affiliated stations."
+    sleep(1)
+  end
+
+  def start_import
+    DataImporter.import_categories('http://www.npr.org/podcasts')
+    DataImporter.import_podcast_data
+  end
+
+  #basic menu display methods
+
+  def start_menu
+    puts "Main Menu:".colorize(:light_blue)
+    puts "To get started, choose an option below (1-4):"
+    puts "(1) Browse podcasts by category"
+    puts "(2) Browse podcasts by alphabet"
+    puts "(3) Search podcasts"
+    puts "(4) Discover podcasts (see a random selection)"
+    puts "Or, type 'help' to see a list of commands."
+  end
+
+  def help
+    puts "Help: Commands".colorize(:light_blue)
+    puts "--Type 'exit' at any time to quit the browser"
+    puts "--Type 'menu' at any time to go back to the main menu"
+    puts "--Type 'help' if you need a quick reminder about the commands"
+  end
+
+  #methods getting, parsing and acting based on user input
+
   def get_input
     input = gets.strip
     self.parse_input(input)
@@ -76,44 +121,7 @@ class CommandLineInterface
     end
   end
 
-  def help
-    puts "Help: Commands".colorize(:light_blue)
-    puts "--Type 'exit' at any time to quit the browser"
-    puts "--Type 'menu' at any time to go back to the main menu"
-    puts "--Type 'help' if you need a quick reminder about the commands"
-  end
-
-  def startup_sequence
-    puts "Setting up your command line podcast finder...".colorize(:light_red)
-    puts "Estimated time: less than one minute.".colorize(:light_red)
-    self.start_import
-    puts ".".colorize(:light_red)
-    sleep(1)
-    puts ".".colorize(:light_yellow)
-    sleep(1)
-    puts ".".colorize(:light_green)
-    sleep(1)
-    puts "Setup complete.".colorize(:light_green)
-    sleep(1)
-    puts "Welcome to the Command Line Podcast Finder!"
-    puts "You can use this command line gem to find and listen to interesting podcasts produced by NPR and affiliated stations."
-    sleep(1)
-  end
-
-  def start_menu
-    puts "Main Menu:".colorize(:light_blue)
-    puts "To get started, choose an option below (1-4):"
-    puts "(1) Browse podcasts by category"
-    puts "(2) Browse podcasts by alphabet"
-    puts "(3) Search podcasts"
-    puts "(4) Discover podcasts (see a random selection)"
-    puts "Or, type 'help' to see a list of commands."
-  end
-
-  def start_import
-    DataImporter.import_categories('http://www.npr.org/podcasts')
-    DataImporter.import_podcast_data
-  end
+#methods for browsing categories and viewing podcasts
 
   def browse_all_categories
     @podcast_counter = 0
@@ -140,6 +148,8 @@ class CommandLineInterface
     when "MORE"
       @podcast_counter += 5
       self.browse_category
+    when @input.class == Fixnum
+      self.display_podcast_info
     end
   end
 
@@ -154,5 +164,23 @@ class CommandLineInterface
       puts "Choose a podcast (1-#{@podcast_counter + listed_podcasts}) to get details or type 'back' to return to the category list".colorize(:light_blue)
     end
   end
+
+#methods for getting details on a specific podcast
+  def display_podcast_info
+    if !@category_choice.podcasts[@input - 1].nil?
+      @podcast_choice = @category_choice.podcasts[@input - 1]
+      @podcast_choice.list_data
+    else
+      puts "Sorry, that's not a podcast. Please enter '1-#{@podcast_counter + listed_podcasts}' to get more details or type 'back' to go back to the category list".colorize(:light_blue)
+      self.get_input
+      if @input.class == Fixnum
+        self.display_podcast_info
+      else
+        self.reset_based_on_input
+      end
+    end
+  end
+
+
 
 end
