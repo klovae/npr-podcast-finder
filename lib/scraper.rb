@@ -64,7 +64,7 @@ class Scraper
 		self.scrape_page(podcast_url)
 		if @index.css('div.detail-overview-content.col2 p').size == 1
 			description = @index.css('div.detail-overview-content.col2 p').text
-			description.gsub(@index.css('div.detail-overview-content.col2 p a').text, "")
+			description.gsub(@index.css('div.detail-overview-content.col2 p a.more').text, "")
 			description.gsub("\"", "'")
 		elsif @indext.css('div.detail-overview-content.col2 p') > 1
 			description = @index.css('div.detail-overview-content.col2 p').first.text
@@ -97,8 +97,7 @@ class Scraper
 			paragraphs = episode.css('p')
 			p1 = paragraphs[0].text.gsub(episode.css('p.teaser time').text, "").gsub(/\n+\s*/, "").gsub("\"", "'")
 			p2 = paragraphs[1].text.gsub(/\n+\s*/, "").gsub("\"", "'")
-			p3 = paragraphs[2].text.gsub(/\n+\s*/, "").gsub("\"", "'")
-			description = p1 + p2 + p3 + " Read more online >>"
+			description = p1 + p2 + " Read more online >>"
 		else
 			description = episode.css('p.teaser').text.gsub(episode.css('p.teaser time').text, "").gsub(/\n+\s*/, "").gsub("\"", "'")
 		end

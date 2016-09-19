@@ -140,17 +140,15 @@ class CommandLineInterface
       @podcast_choice.list_data
       puts ""
       puts "Choose an option below to proceed:".colorize(:light_blue)
-      puts "(1) Get episode list"
-      puts "(2) Go back to podcast listing for #{@category_choice.name}"
-      puts "(3) Return to main category menu"
+      puts "Type 'more' to get episode list"
+      puts "Type 'back' to return to podcast listing for #{@category_choice.name}"
+      puts "Type 'menu' to return to main category menu"
       self.get_input
-      if @input == 1
+      if @input == "MORE"
         self.display_episode_list
-      elsif @input == 2
+      elsif @input == "BACK"
         @podcast_counter = 0
         self.browse_category
-      elsif @input == 3
-        self.browse_all_categories
       else
         self.proceed_based_on_input
       end
@@ -168,24 +166,38 @@ class CommandLineInterface
 
   def display_episode_list
     DataImporter.import_episodes(@podcast_choice)
-    puts ""
-    puts "#{@podcast_choice.name} Episode List".colorize(:light_blue)
-    @podcast_choice.list_episodes
-    puts ""
+    if !@podcast_choice.episodes.empty?
+      puts ""
+      puts "#{@podcast_choice.name} Episode List".colorize(:light_blue)
+      @podcast_choice.list_episodes
+      puts ""
 
-    puts "Options:".colorize(:light_blue)
-    puts "Select an episode (1-#{@podcast_choice.episodes.count}) to get a description and download link".colorize(:light_blue)
-    puts "Type 'back' to return to podcast listing for #{@category_choice.name}".colorize(:light_blue)
-    puts "Type 'menu' to see the category list".colorize(:light_blue)
-    self.get_input
-    if @input.class == Fixnum && @input <= @podcast_choice.episodes.count
-      self.display_episode_info
-    elsif @input == "BACK"
-      @category_choice = nil
-      @podcast_counter = 0
-      self.browse_category
-    else
-      self.proceed_based_on_input
+      puts "Options:".colorize(:light_blue)
+      puts "Select an episode (1-#{@podcast_choice.episodes.count}) to get a description and download link".colorize(:light_blue)
+      puts "Type 'back' to return to podcast listing for #{@category_choice.name}".colorize(:light_blue)
+      puts "Type 'menu' to see the category list".colorize(:light_blue)
+      self.get_input
+      if @input.class == Fixnum && @input <= @podcast_choice.episodes.count
+        self.display_episode_info
+      elsif @input == "BACK"
+        @podcast_counter = 0
+        self.browse_category
+      else
+        self.proceed_based_on_input
+      end
+    else #for edge case where a podcast has no associated episodes but is listed as active by website
+      puts ""
+      puts "Looks like #{@podcast_choice.name} doesn't have episodes online.".colorize(:light_red)
+      puts ""
+      puts "Type 'back' to return to podcast listing for #{@category_choice.name}".colorize(:light_blue)
+      puts "Type 'menu' to see the category list".colorize(:light_blue)
+      self.get_input
+      if @input == "BACK"
+        @podcast_counter = 0
+        self.browse_category
+      else
+        self.proceed_based_on_input
+      end
     end
   end
 
