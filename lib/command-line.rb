@@ -11,30 +11,30 @@ class CommandLineInterface
     self.start_menu
     self.get_input
     until @continue == "EXIT"
-      if @input.class == Fixnum
-        if @input.between?(1, 4)
-          self.menu_action_based_on_input
-        else
-          puts "Please choose a number between 1 and 4"
-          self.get_input
-          self.menu_action_based_on_input
-        end
-      else
-        self.reset_based_on_input
-      end
+      self.menu_action_based_on_input
     end
     puts "Thanks for using the Command Line Podcast Finder!"
   end
 
   def menu_action_based_on_input
-    case @input
-    when 1
-      self.browse_all_categories
-    when 2
+    if @input.class == Fixnum
+      if @input.between?(1, 4)
+        case @input
+        when 1
+          self.browse_all_categories
+        when 2
 
-    when 3
+        when 3
 
-    when 4
+        when 4
+        end
+      else
+        puts "Please choose a number between 1 and 4"
+        self.get_input
+        self.menu_action_based_on_input
+      end
+    else
+      self.reset_based_on_input
     end
   end
 
@@ -121,7 +121,7 @@ class CommandLineInterface
     Category.list_categories
     puts "Enter the number of the category you'd like to explore (1-15)".colorize(:light_blue)
     self.get_input
-    if @input.between?(1, 15)
+    if @input.class == Fixnum && @input.between?(1, 15)
       @category_choice = Category.all[@input - 1]
       self.browse_category
     else
