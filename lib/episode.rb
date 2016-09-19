@@ -10,6 +10,10 @@ class Episode
     self.save
   end
 
+  def self.create_from_collection(episode_array)
+    episode_array.each {|episode_hash| self.new(episode_hash)}
+  end
+
   def save
     @@all << self
   end

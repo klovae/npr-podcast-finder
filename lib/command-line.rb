@@ -141,14 +141,16 @@ class CommandLineInterface
     if @input <= @category_choice.podcasts.size
       @podcast_choice = @category_choice.podcasts[@input - 1]
       DataImporter.import_description(@podcast_choice)
+      puts ""
       @podcast_choice.list_data
+      puts ""
       puts "Choose an option below to proceed:".colorize(:light_blue)
       puts "(1) Get episode list"
       puts "(2) Go back to podcast listing for #{@category_choice.name}"
       puts "(3) Return to main category menu"
       self.get_input
       if @input == 1
-        @podcast_choice.list_episodes
+        self.display_episode_list
       elsif @input == 2
         @podcast_counter = 0
         self.browse_category
@@ -167,6 +169,28 @@ class CommandLineInterface
         self.proceed_based_on_input
       end
     end
+  end
+
+  def display_episode_list
+    DataImporter.import_episodes(@podcast_choice)
+    puts "#{@podcast_choice.name} Episode List".colorize(:light_blue)
+    @podcast_choice.list_episodes
+    puts "Options:"
+    puts "Select an episode (#{1-@podcast_choice.episodes.count}) to get a description and download link"(:light_blue)
+    puts "Type 'back' to return to podcast listing for #{@category_choice.name} or 'menu' to see the category list."
+    self.get_input
+    if @input.class == Fixnum && @input <= @podcast_choice.episodes.count
+      self.display_episode_info
+    elsif @input == "BACK"
+      @category_choice = nil
+      @podcast_counter = 0
+      self.browse_category
+    else
+      self.proceed_based_on_input
+    end
+  end
+
+  def display_episode_info
   end
 
 end

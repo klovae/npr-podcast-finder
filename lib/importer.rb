@@ -38,16 +38,18 @@ class DataImporter
   end
 
   def self.import_description(podcast)
-    podcast.description = Scraper.new.get_podcast_description(podcast.url)
+    if podcast.description.nil?
+      podcast.description = Scraper.new.get_podcast_description(podcast.url)
+    end
   end
 
   def self.import_episodes(podcast)
-    episode_list = Scraper.new.import_episodes(podcast.url)
-    episode_list.each do |episode_hash|
-      episode = Episode.new(episode_hash)
-      podcast.add_episode(episode)
+    if podcast.episodes == []
+      episode_list = Scraper.new.scrape_episodes(podcast.url)
+      episode_list.each do |episode_hash|
+        episode = Episode.new(episode_hash)
+        podcast.add_episode(episode)
     end
-    podcast.episodes
   end
 
 end

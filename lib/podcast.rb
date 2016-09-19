@@ -9,6 +9,7 @@ class Podcast
   def initialize(podcast_hash)
     @name = podcast_hash[:name]
     @url = podcast_hash[:url]
+    @description = nil
     @categories = []
     @episodes = []
     self.save
@@ -33,7 +34,7 @@ class Podcast
 
   def list_episodes
     self.episodes.each_with_index do |episode, index|
-      puts "(#{index + 1}) #{episode.name} - #{episode.date} - #{episode.length}"
+      puts "(#{index + 1}) #{episode.title} - #{episode.date} - #{episode.length}"
     end
   end
 
