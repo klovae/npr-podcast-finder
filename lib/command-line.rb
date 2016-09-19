@@ -1,28 +1,41 @@
 class CommandLineInterface
 
-  attr_accessor :selection, :podcast_counter, :category_choice, :choice
+  attr_accessor :continue, :podcast_counter, :category_choice, :input
 
-  def initialize(selection = "continue")
-    @selection = selection
+  def initialize(continue = "yes")
+    @continue = continue
   end
 
   def call
     self.startup_sequence
     self.start_menu
-    @choice = self.get_input
-    if @choice.between?(1, 4)
-      case @choice
-      when 1
-        self.browse_all_categories
-      when 2
-
-      when 3
-
-      when 4
+    self.get_input
+    until @continue == "EXIT"
+      if @input.class == Fixnum
+        if @input.between?(1, 4)
+          self.menu_action_based_on_input
+        else
+          puts "Please choose a number between 1 and 4"
+          self.get_input
+          self.menu_action_based_on_input
+        end
+      else
+        self.reset_based_on_input
       end
-    else self.reset_based_on_input
     end
     puts "Thanks for using the Command Line Podcast Finder!"
+  end
+
+  def menu_action_based_on_input
+    case @input
+    when 1
+      self.browse_all_categories
+    when 2
+
+    when 3
+
+    when 4
+    end
   end
 
   def get_input
@@ -32,34 +45,34 @@ class CommandLineInterface
 
   def parse_input(input)
     if input.match(/^\d+$/)
-      @choice = input.to_i
+      @input = input.to_i
     elsif input.upcase == "HELP" || input.upcase == "MENU" || input.upcase == "EXIT" || input.upcase == "MORE" || input.upcase == "BACK"
-      @choice = input.upcase
+      @input = input.upcase
     else
-      @choice = "STUCK"
+      @input = "STUCK"
     end
   end
 
   def reset_based_on_input
-    case @choice
+    case @input
     when "STUCK"
       puts "Please choose a number or enter a command. Stuck? Type 'help'."
-      @choice = self.get_input
+      @input = self.get_input
       self.reset_based_on_input
     when "HELP"
       self.help
-      @choice = self.get_input
+      @input = self.get_input
       self.reset_based_on_input
     when "MENU"
       self.start_menu
-      @choice = self.get_input
-      self.reset_based_on_input(choice)
+      @input = self.get_input
+      self.reset_based_on_input
     when "BACK" || "MORE"
-      @choice
+      @input
     when "EXIT"
-      @continue
-    when choice.class == Fixnum
-      @choice
+      @continue = "EXIT"
+    when input.class == Fixnum
+      @input
     end
   end
 
@@ -108,8 +121,8 @@ class CommandLineInterface
     Category.list_categories
     puts "Enter the number of the category you'd like to explore (1-15)".colorize(:light_blue)
     self.get_input
-    if @choice.between?(1, 15)
-      @category_choice = Category.all[@choice - 1]
+    if @input.between?(1, 15)
+      @category_choice = Category.all[@input - 1]
       self.browse_category
     else
       self.reset_based_on_input
@@ -120,7 +133,7 @@ class CommandLineInterface
     puts "Category: #{@category_choice.name}".colorize(:light_blue)
     self.display_podcasts
     self.get_input
-    case @choice
+    case @input
     when "BACK"
       @category_choice = nil
       self.browse_all_categories
