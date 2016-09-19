@@ -8,41 +8,16 @@ class CommandLineInterface
 
   def call
     self.startup_sequence
-    self.start_menu
-    self.get_input
     until @continue == "EXIT"
-      self.menu_action_based_on_input
+      self.browse_all_categories
     end
     puts "Thanks for using the Command Line Podcast Finder!"
-  end
-
-  def menu_action_based_on_input
-    if @input.class == Fixnum
-      if @input.between?(1, 4)
-        case @input
-        when 1
-          self.browse_all_categories
-        when 2
-
-        when 3
-
-        when 4
-        end
-      else
-        puts "Please choose a number between 1 and 4"
-        self.get_input
-        self.menu_action_based_on_input
-      end
-    else
-      self.reset_based_on_input
-    end
   end
 
   #methods needed for startup
 
   def startup_sequence
     puts "Setting up your command line podcast finder...".colorize(:light_red)
-    puts "Estimated time: less than one minute.".colorize(:light_red)
     self.start_import
     puts ".".colorize(:light_red)
     sleep(1)
@@ -63,20 +38,10 @@ class CommandLineInterface
 
   #basic menu display methods
 
-  def start_menu
-    puts "Main Menu:".colorize(:light_blue)
-    puts "To get started, choose an option below (1-4):"
-    puts "(1) Browse podcasts by category"
-    puts "(2) Browse podcasts by alphabet"
-    puts "(3) Search podcasts"
-    puts "(4) Discover podcasts (see a random selection)"
-    puts "Or, type 'help' to see a list of commands."
-  end
-
   def help
     puts "Help: Commands".colorize(:light_blue)
     puts "--Type 'exit' at any time to quit the browser"
-    puts "--Type 'menu' at any time to go back to the main menu"
+    puts "--Type 'menu' at any time to go back to the main category menu"
     puts "--Type 'help' if you need a quick reminder about the commands"
   end
 
@@ -108,7 +73,7 @@ class CommandLineInterface
       @input = self.get_input
       self.reset_based_on_input
     when "MENU"
-      self.start_menu
+      self.browse_all_categories
       @input = self.get_input
       self.reset_based_on_input
     when "BACK" || "MORE"
@@ -124,9 +89,9 @@ class CommandLineInterface
 
   def browse_all_categories
     @podcast_counter = 0
-    puts "Podcast Categories:".colorize(:light_blue)
+    puts "Main Menu: All Categories".colorize(:light_blue)
     Category.list_categories
-    puts "Enter the number of the category you'd like to explore (1-15)".colorize(:light_blue)
+    puts "To get started, choose a category below (1-#{Category.all.size}) or type 'help' to see a list of commands:"
     self.get_input
     if @input.class == Fixnum && @input.between?(1, 15)
       @category_choice = Category.all[@input - 1]

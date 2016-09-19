@@ -1,12 +1,12 @@
 class DataImporter
 
   def self.import_categories(index_url)
-    category_data = Scraper.scrape_categories(index_url)
+    category_data = Scraper.new.scrape_category_list(index_url)
     Category.create_from_collection(category_data)
   end
 
   def self.import_podcast_data(category)
-    podcast_array = Scraper.scrape_podcasts(category.url)
+    podcast_array = Scraper.new.scrape_podcasts(category.url)
     self.import_stations(podcast_array)
     self.import_podcasts(podcast_array, category)
   end
@@ -38,11 +38,11 @@ class DataImporter
   end
 
   def self.import_description(podcast)
-    podcast.description = Scraper.get_podcast_description(podcast.url)
+    podcast.description = Scraper.new.get_podcast_description(podcast.url)
   end
 
   def self.import_episodes(podcast)
-    episode_list = Scraper.get_episodes(podcast.url)
+    episode_list = Scraper.new.import_episodes(podcast.url)
     episode_list.each do |episode_hash|
       episode = Episode.new(episode_hash)
       podcast.add_episode(episode)

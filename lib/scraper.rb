@@ -4,27 +4,28 @@ require 'pry'
 
 class Scraper
 
-	attr_accessor :index
+	attr_accessor :index, :categories
 
 	def scrape_page(url)
 		html = open(url)
 		@index = Nokogiri::HTML(html)
 	end
 
-	def get_category_list
-		categories = []
+	def scrape_category_list(url)
+		self.scrape_page(url)
+		@categories = []
 		groups = @index.css('nav.global-navigation div.subnav.subnav-podcast-categories div.group')
 		categories = groups.each do |group|
 			category_info = group.css('ul li')
-			category_info.each do category
+			category_info.each do |category_data|
 				category = {
-					:name => category.css('a').text,
-					:url => "http://www.npr.org" + category.css('a').attribute('href').value
+					:name => category_data.css('a').text,
+					:url => "http://www.npr.org" + category_data.css('a').attribute('href').value
 				}
-				categories << category
+				@categories << category
 			end
 		end
-		categories
+		@categories
 	end
 
 	# podcasts scraping
@@ -59,23 +60,23 @@ class Scraper
 		}
 	end
 
-	def self.get_podcast_description(podcast_url)
-		podcast = self.start_scrape(podcast_url)
-		if podcast.css('div.detail-overview-content.col2 p').size == 1
-			description = podcast.css('div.detail-overview-content.col2 p').text
-			description.gsub(podcast.css('div.detail-overview-content.col2 p a').text, "")
+	def get_podcast_description(podcast_url)
+		self.scrape_page(podcast_url)
+		if @index.css('div.detail-overview-content.col2 p').size == 1
+			description = @index.css('div.detail-overview-content.col2 p').text
+			description.gsub(@index.css('div.detail-overview-content.col2 p a').text, "")
 			description.gsub("\"", "'")
-		elsif podcast.css('div.detail-overview-content.col2 p') > 1
-			description = podcast.css('div.detail-overview-content.col2 p').first.text
+		elsif @indext.css('div.detail-overview-content.col2 p') > 1
+			description = @index.css('div.detail-overview-content.col2 p').first.text
 		end
 	end
 
 	#individual episode methods
 
-	def self.get_episodes(podcast_url)
+	def scrape_episodes(podcast_url)
 		episode_list = []
-		podcast = self.start_scrape(podcast_url)
-		episodes = podcast.css('section.podcast-section.episode-list article.item.podcast-episode')
+		self.scrape_page(podcast_url)
+		episodes = @index.css('section.podcast-section.episode-list article.item.podcast-episode')
 		episodes.each do |episode|
 			episode_data = self.get_episode_data(episode)
 			episode_list << episode_data unless episode_data[:download_link].nil? #unless is for edge case
@@ -83,7 +84,7 @@ class Scraper
 		episode_list
 	end
 
-	def self.get_episode_data(episode)
+	def get_episode_data(episode)
 		#for an edge case where sometimes the first podcast has no file associated with it
 		if !episode.css('div.audio-module-tools').empty?
 			link = episode.css('div.audio-module-tools ul li a').attribute('href').value
