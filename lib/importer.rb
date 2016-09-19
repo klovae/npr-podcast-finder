@@ -49,6 +49,7 @@ class DataImporter
       episode_list.each do |episode_hash|
         episode = Episode.new(episode_hash)
         podcast.add_episode(episode)
+      end
     end
   end
 

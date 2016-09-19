@@ -97,7 +97,6 @@ class CommandLineInterface
     Category.list_categories
     puts "To get started, choose a category above (1-#{Category.all.size}) or type 'help' to see a list of commands:".colorize(:light_blue)
     self.get_input
-    self.proceed_based_on_input
     if @input.class == Fixnum && @input.between?(1, 16)
       @category_choice = Category.all[@input - 1]
       DataImporter.import_podcast_data(@category_choice)
@@ -173,11 +172,15 @@ class CommandLineInterface
 
   def display_episode_list
     DataImporter.import_episodes(@podcast_choice)
+    puts ""
     puts "#{@podcast_choice.name} Episode List".colorize(:light_blue)
     @podcast_choice.list_episodes
-    puts "Options:"
-    puts "Select an episode (#{1-@podcast_choice.episodes.count}) to get a description and download link"(:light_blue)
-    puts "Type 'back' to return to podcast listing for #{@category_choice.name} or 'menu' to see the category list."
+    puts ""
+
+    puts "Options:".colorize(:light_blue)
+    puts "Select an episode (1-#{@podcast_choice.episodes.count}) to get a description and download link".colorize(:light_blue)
+    puts "Type 'back' to return to podcast listing for #{@category_choice.name}".colorize(:light_blue)
+    puts "Type 'menu' to see the category list".colorize(:light_blue)
     self.get_input
     if @input.class == Fixnum && @input <= @podcast_choice.episodes.count
       self.display_episode_info
@@ -191,6 +194,7 @@ class CommandLineInterface
   end
 
   def display_episode_info
+
   end
 
 end
