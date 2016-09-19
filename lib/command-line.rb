@@ -40,12 +40,18 @@ class CommandLineInterface
 
   def help
     puts "Help: Commands".colorize(:light_blue)
+    puts "--To access any numbered menu, simply type the number of the item you're selecting and press Enter to confirm."
+    puts "  Example Menu: All Categories"
+    puts "   (1) Arts"
+    puts "   (2) Business"
+    puts "   (3) Comedy"
+    puts "  For example: if you want to view the Comedy category, just type '3' (without the quotes) and press Enter"
     puts "--Type 'exit' at any time to quit the browser"
     puts "--Type 'menu' at any time to go back to the main category menu"
     puts "--Type 'help' if you need a quick reminder about the commands"
   end
 
-  #methods getting, parsing and acting based on user input
+  #methods for gets-ing, parsing and acting based on user input
 
   def get_input
     input = gets.strip
@@ -62,25 +68,23 @@ class CommandLineInterface
     end
   end
 
-  def reset_based_on_input
+  def proceed_based_on_input
     case @input
     when "STUCK"
       puts "Please choose a number or enter a command. Stuck? Type 'help'."
       @input = self.get_input
-      self.reset_based_on_input
+      self.proceed_based_on_input
     when "HELP"
       self.help
       @input = self.get_input
-      self.reset_based_on_input
+      self.proceed_based_on_input
     when "MENU"
       self.browse_all_categories
-      @input = self.get_input
-      self.reset_based_on_input
     when "BACK" || "MORE"
       @input
     when "EXIT"
       @continue = "EXIT"
-    when input.class == Fixnum
+    when @input.class == Fixnum
       @input
     end
   end
@@ -91,13 +95,14 @@ class CommandLineInterface
     @podcast_counter = 0
     puts "Main Menu: All Categories".colorize(:light_blue)
     Category.list_categories
-    puts "To get started, choose a category below (1-#{Category.all.size}) or type 'help' to see a list of commands:"
+    puts "To get started, choose a category above (1-#{Category.all.size}) or type 'help' to see a list of commands:".colorize(:light_blue)
     self.get_input
-    if @input.class == Fixnum && @input.between?(1, 15)
+    self.proceed_based_on_input
+    if @input.class == Fixnum && @input.between?(1, 16)
       @category_choice = Category.all[@input - 1]
       self.browse_category
     else
-      self.reset_based_on_input
+      self.proceed_based_on_input
     end
   end
 
@@ -105,10 +110,11 @@ class CommandLineInterface
     puts "Category: #{@category_choice.name}".colorize(:light_blue)
     self.display_podcasts
     self.get_input
+    self.proceed_based_on_input
     case @input
     when "BACK"
       @category_choice = nil
-      self.browse_all_categories
+      self.proceed_based_on_input
     when "MORE"
       @podcast_counter += 5
       self.browse_category
@@ -140,7 +146,7 @@ class CommandLineInterface
       if @input.class == Fixnum
         self.display_podcast_info
       else
-        self.reset_based_on_input
+        self.proceed_based_on_input
       end
     end
   end
