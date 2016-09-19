@@ -59,7 +59,6 @@ class CommandLineInterface
 
   def start_import
     DataImporter.import_categories('http://www.npr.org/podcasts')
-    DataImporter.import_podcast_data
   end
 
   #basic menu display methods
