@@ -7,7 +7,17 @@ class Episode
 
   def initialize(episode_hash)
     episode_hash.each {|key, value| self.send("#{key}=", value)}
+    self.format_date
     self.save
+  end
+
+  def format_date
+    date_string = @date.to_s
+    @date = Date.parse(date_string, "%Y-%m-%d")
+  end
+
+  def display_date
+    @date.strftime('%B %-d, %Y')
   end
 
   def self.create_from_collection(episode_array)

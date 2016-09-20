@@ -71,7 +71,7 @@ class CommandLineInterface
   def proceed_based_on_input
     case @input
     when "STUCK"
-      puts "Please choose a number or enter a command. Stuck? Type 'help'."
+      puts "Please choose a number or enter a command. Stuck? Type 'help'.".colorize(:light_blue)
       @input = self.get_input
       self.proceed_based_on_input
     when "HELP"
@@ -91,7 +91,7 @@ class CommandLineInterface
     @podcast_counter = 0
     puts "Main Menu: All Categories".colorize(:light_blue)
     Category.list_categories
-    puts "To get started, choose a category above (1-#{Category.all.size}) or type 'help' to see a list of commands:".colorize(:light_blue)
+    puts "To get started, choose a category above (1-#{Category.all.size}) or type 'help' to see a list of commands.".colorize(:light_blue)
     self.get_input
     if @input.class == Fixnum && @input.between?(1, 16)
       @category_choice = Category.all[@input - 1]
@@ -140,9 +140,9 @@ class CommandLineInterface
       @podcast_choice.list_data
       puts ""
       puts "Choose an option below to proceed:".colorize(:light_blue)
-      puts "Type 'more' to get episode list"
-      puts "Type 'back' to return to podcast listing for #{@category_choice.name}"
-      puts "Type 'menu' to return to main category menu"
+      puts "Type 'more' to get episode list".colorize(:light_blue)
+      puts "Type 'back' to return to podcast listing for #{@category_choice.name}".colorize(:light_blue)
+      puts "Type 'menu' to return to main category menu".colorize(:light_blue)
       self.get_input
       if @input == "MORE"
         self.display_episode_list
@@ -206,7 +206,7 @@ class CommandLineInterface
     puts ""
     @episode_choice.list_data
     puts ""
-    puts "Options:"
+    puts "Options:".colorize(:light_blue)
     puts "Type 'back' to return to episode listing for #{@podcast_choice.name}".colorize(:light_blue)
     puts "Type 'podcasts' to return to the podcast list for #{@category_choice.name}".colorize(:light_blue)
     puts "Type 'menu' to see the category list".colorize(:light_blue)

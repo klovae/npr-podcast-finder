@@ -63,12 +63,11 @@ class Scraper
 	def get_podcast_description(podcast_url)
 		self.scrape_page(podcast_url)
 		if @index.css('div.detail-overview-content.col2 p').size == 1
-			description = @index.css('div.detail-overview-content.col2 p').text
-			description.gsub(@index.css('div.detail-overview-content.col2 p a.more').text, "")
-			description.gsub("\"", "'")
+			text = @index.css('div.detail-overview-content.col2 p').text
 		elsif @indext.css('div.detail-overview-content.col2 p') > 1
-			description = @index.css('div.detail-overview-content.col2 p').first.text
+			text = @index.css('div.detail-overview-content.col2 p').first.text
 		end
+			description = text.gsub(@index.css('div.detail-overview-content.col2 p a.more').text, "").gsub("\"", "'")
 	end
 
 	#individual episode methods
@@ -88,7 +87,7 @@ class Scraper
 		#for an edge case where sometimes the first podcast has no file associated with it
 		if !episode.css('div.audio-module-tools').empty?
 			link = episode.css('div.audio-module-tools ul li a').attribute('href').value
-			length = episode.css('div.audio-module-controls b.audio-module-listen-duration').text[/(\d\d:\d\d)/]
+			length = episode.css('div.audio-module-controls b.audio-module-listen-duration').text[/(\d*:?\d{1,2}:\d\d)/]
 		else
 			link = nil
 			length = nil
