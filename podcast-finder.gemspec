@@ -21,10 +21,10 @@ Gem::Specification.new do |spec|
   spec.post_install_message = "Thanks for installing! Happy listening."
 
   spec.add_runtime_dependency 'nokogiri', '~> 1.6', '>= 1.6.8'
-  spec.add_runtime_dependency 'require_all', '>= 0'
+  spec.add_runtime_dependency 'require_all', '~> 1.3', '>= 1.3.3'
   spec.add_runtime_dependency 'colorize', '~> 0.8', '>= 0.8.1'
   spec.add_runtime_dependency 'bundler'
-  
+
   spec.add_development_dependency 'rspec', '~>3.5'
   spec.add_development_dependency 'pry', '~> 0'
 end
