@@ -27,6 +27,12 @@ class Episode
   def list_data
     puts "Episode: #{self.title}".colorize(:light_blue)
     puts "Podcast: ".colorize(:light_blue) + "#{self.podcast.name}"
+    puts "Date ".colorize(:light_blue) + "#{self.display_date}"
+    if self.length.nil?
+      puts "Length: ".colorize(:light_blue) + "Not Available"
+    else
+      puts "Length: ".colorize(:light_blue) + "#{self.length}"
+    end
     puts "Description: ".colorize(:light_blue) + "#{self.description}"
     puts "Link to download: ".colorize(:light_blue) + "#{self.download_link}"
     puts "Link to listen:  ".colorize(:light_blue) + "#{self.podcast.url}"

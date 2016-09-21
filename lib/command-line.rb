@@ -19,17 +19,19 @@ class CommandLineInterface
   def startup_sequence
     puts "Setting up your command line podcast finder...".colorize(:light_red)
     self.start_import
+    sleep(0.5)
     puts ".".colorize(:light_red)
-    sleep(1)
+    sleep(0.5)
     puts ".".colorize(:light_yellow)
-    sleep(1)
+    sleep(0.5)
     puts ".".colorize(:light_green)
-    sleep(1)
+    sleep(0.5)
     puts "Setup complete.".colorize(:light_green)
-    sleep(1)
+    sleep(0.5)
+    puts ""
     puts "Welcome to the Command Line Podcast Finder!"
     puts "You can use this command line gem to find and listen to interesting podcasts produced by NPR and affiliated stations."
-    sleep(1)
+    sleep(0.5)
   end
 
   def start_import
@@ -39,6 +41,7 @@ class CommandLineInterface
   #basic menu display methods
 
   def help
+    puts ""
     puts "Help: Commands".colorize(:light_blue)
     puts "--To access any numbered menu, simply type the number of the item you're selecting and press Enter to confirm."
     puts "  Example Menu: All Categories"
@@ -71,17 +74,17 @@ class CommandLineInterface
   def proceed_based_on_input
     case @input
     when "STUCK"
-      puts "Please choose a number or enter a command. Stuck? Type 'help'.".colorize(:light_blue)
-      @input = self.get_input
-      self.proceed_based_on_input
+      puts "Sorry, that's not an option. Please type a command from the options above. Stuck? Type 'help'.".colorize(:light_blue)
     when "HELP"
       self.help
-      @input = self.get_input
-      self.proceed_based_on_input
     when "MENU"
       self.browse_all_categories
     when "EXIT"
       @continue = "EXIT"
+    when @input == "BACK" || @input == "MORE" || @input == "PODCASTS"
+      @input
+    when @input == Fixnum
+      @input
     end
   end
 
@@ -89,26 +92,60 @@ class CommandLineInterface
 
   def browse_all_categories
     @podcast_counter = 0
+    puts ""
     puts "Main Menu: All Categories".colorize(:light_blue)
     Category.list_categories
+    puts ""
     puts "To get started, choose a category above (1-#{Category.all.size}) or type 'help' to see a list of commands.".colorize(:light_blue)
+    self.choose_category
+  end
+
+  def choose_category
     self.get_input
     if @input.class == Fixnum && @input.between?(1, 16)
       @category_choice = Category.all[@input - 1]
       DataImporter.import_podcast_data(@category_choice)
       self.browse_category
     else
-      self.proceed_based_on_input
+      if @input.class == Fixnum && !@input.between?(1,16)
+        puts "Sorry, that's not a category. Please enter a number between 1 and 16"
+        self.choose_category
+      else
+        self.proceed_based_on_input
+        self.choose_category unless @continue == "EXIT"
+      end
     end
   end
 
   def browse_category
+    puts ""
     puts "Category: #{@category_choice.name}".colorize(:light_blue)
     self.display_podcasts
+    self.choose_podcast
+  end
+
+  def display_podcasts
+    @listed_podcasts = @category_choice.list_podcasts(@podcast_counter)
+    if @listed_podcasts == 5
+      puts ""
+      puts "Enter the number of the podcast you'd like to check out (1-#{@podcast_counter + @listed_podcasts})".colorize(:light_blue)
+      puts "Type 'menu' to return to the category list".colorize(:light_blue)
+      puts "Type 'more' to see the next 5 podcasts".colorize(:light_blue)
+    else
+      puts ""
+      puts "That's all the podcasts for this category!".colorize(:light_blue)
+      puts "Choose a podcast (1-#{@podcast_counter + @listed_podcasts}) to get details or type 'back' to return to the category list".colorize(:light_blue)
+    end
+  end
+
+  def choose_podcast
     self.get_input
-    if @input.class == Fixnum
+    if @input.class == Fixnum && @input.between?(1, @podcast_counter + @listed_podcasts)
       self.display_podcast_info
-    elsif @input == "BACK"
+    elsif @input.class == Fixnum && !@input.between?(1, @podcast_counter + @listed_podcasts)
+      puts "Sorry, that's not an option. Please choose a number that corresponds to a podcast or type 'more' to see more podcasts.".colorize(:light_blue)
+      self.choose_podcast
+    elsif @input == "MENU"
       @category_choice = nil
       self.proceed_based_on_input
     elsif @input == "MORE"
@@ -116,51 +153,36 @@ class CommandLineInterface
       self.browse_category
     else
       self.proceed_based_on_input
-    end
-  end
-
-  def display_podcasts
-    listed_podcasts = @category_choice.list_podcasts(@podcast_counter)
-    if listed_podcasts == 5
-      puts "Enter the number of the podcast you'd like to check out (1-#{@podcast_counter + listed_podcasts})".colorize(:light_blue)
-      puts "Type 'back' to return to the category list".colorize(:light_blue)
-      puts "Type 'more' to see the next 5 podcasts".colorize(:light_blue)
-    else
-      puts "That's all the podcasts for this category!".colorize(:light_blue)
-      puts "Choose a podcast (1-#{@podcast_counter + listed_podcasts}) to get details or type 'back' to return to the category list".colorize(:light_blue)
+      self.choose_podcast unless @continue == "EXIT"
     end
   end
 
 #methods for getting details on a specific podcast
   def display_podcast_info
-    if @input <= @category_choice.podcasts.size
-      @podcast_choice = @category_choice.podcasts[@input - 1]
-      DataImporter.import_description(@podcast_choice)
-      puts ""
-      @podcast_choice.list_data
-      puts ""
-      puts "Choose an option below to proceed:".colorize(:light_blue)
-      puts "Type 'more' to get episode list".colorize(:light_blue)
-      puts "Type 'back' to return to podcast listing for #{@category_choice.name}".colorize(:light_blue)
-      puts "Type 'menu' to return to main category menu".colorize(:light_blue)
-      self.get_input
-      if @input == "MORE"
-        self.display_episode_list
-      elsif @input == "BACK"
-        @podcast_counter = 0
-        self.browse_category
-      else
-        self.proceed_based_on_input
-      end
+    @podcast_choice = @category_choice.podcasts[@input - 1]
+    DataImporter.import_description(@podcast_choice)
+    puts ""
+    @podcast_choice.list_data
+    puts ""
+    puts "Choose an option below to proceed:".colorize(:light_blue)
+    puts "Type 'more' to get episode list".colorize(:light_blue)
+    puts "Type 'back' to return to podcast listing for #{@category_choice.name}".colorize(:light_blue)
+    puts "Type 'menu' to return to main category menu".colorize(:light_blue)
+    self.choose_podcast_action
+  end
 
+  def choose_podcast_action
+    self.get_input
+    if @input == "MORE"
+      self.display_episode_list
+    elsif @input == "BACK"
+      @podcast_counter = 0
+      self.browse_category
+    elsif @input == "MENU"
+      self.proceed_based_on_input
     else
-      puts "Sorry, that's not a podcast. Please enter '1-#{@podcast_counter + listed_podcasts}' to get more details or type 'back' to go back to the category list".colorize(:light_blue)
-      self.get_input
-      if @input.class == Fixnum
-        self.display_podcast_info
-      else
-        self.proceed_based_on_input
-      end
+      self.proceed_based_on_input
+      self.choose_podcast_action unless @continue == "EXIT"
     end
   end
 
@@ -176,29 +198,44 @@ class CommandLineInterface
       puts "Select an episode (1-#{@podcast_choice.episodes.count}) to get a description and download link".colorize(:light_blue)
       puts "Type 'back' to return to podcast listing for #{@category_choice.name}".colorize(:light_blue)
       puts "Type 'menu' to see the category list".colorize(:light_blue)
-      self.get_input
-      if @input.class == Fixnum && @input <= @podcast_choice.episodes.count
-        @episode_choice = @podcast_choice.episodes[@input-1]
-        self.display_episode_info
-      elsif @input == "BACK"
-        @podcast_counter = 0
-        self.browse_category
-      else
-        self.proceed_based_on_input
-      end
+      self.choose_episode
     else #for edge case where a podcast has no associated episodes but is listed as active by website
       puts ""
       puts "Looks like #{@podcast_choice.name} doesn't have episodes online.".colorize(:light_red)
       puts ""
       puts "Type 'back' to return to podcast listing for #{@category_choice.name}".colorize(:light_blue)
       puts "Type 'menu' to see the category list".colorize(:light_blue)
-      self.get_input
-      if @input == "BACK"
-        @podcast_counter = 0
-        self.browse_category
-      else
-        self.proceed_based_on_input
-      end
+      self.choose_action_no_episodes
+    end
+  end
+
+  def choose_action_no_episodes
+    self.get_input
+    if @input == "BACK"
+      @podcast_counter = 0
+      self.browse_category
+    elsif @input == "MENU"
+      self.proceed_based_on_input
+    else
+      self.proceed_based_on_input
+      self.choose_action_no_episodes unless @continue == "EXIT"
+    end
+  end
+
+  def choose_episode
+    self.get_input
+    if @input.class == Fixnum && @input.between?(1, @podcast_choice.episodes.count)
+      @episode_choice = @podcast_choice.episodes[@input-1]
+      self.display_episode_info
+    elsif @input.class == Fixnum && !@input.between?(1, @podcast_choice.episodes.count)
+      puts "Sorry, that's not an episode option. Please enter a number between 1 and #{@podcast_choice.episodes.count} to proceed."
+      self.choose_episode
+    elsif @input == "BACK"
+      @podcast_counter = 0
+      self.browse_category
+    else
+      self.proceed_based_on_input
+      self.choose_episode unless @continue == "EXIT"
     end
   end
 
@@ -210,6 +247,10 @@ class CommandLineInterface
     puts "Type 'back' to return to episode listing for #{@podcast_choice.name}".colorize(:light_blue)
     puts "Type 'podcasts' to return to the podcast list for #{@category_choice.name}".colorize(:light_blue)
     puts "Type 'menu' to see the category list".colorize(:light_blue)
+    self.choose_action_episode_info
+  end
+
+  def choose_action_episode_info
     self.get_input
     if @input == "BACK"
       @episode_choice = nil
@@ -221,6 +262,7 @@ class CommandLineInterface
       self.browse_category
     else
       self.proceed_based_on_input
+      self.choose_action_episode_info unless @continue == "EXIT"
     end
   end
 
