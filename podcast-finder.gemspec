@@ -1,6 +1,5 @@
 # coding: utf-8
 
-
 Gem::Specification.new do |spec|
   spec.name           = 'podcast-finder'
   spec.platform       = Gem::Platform::RUBY
