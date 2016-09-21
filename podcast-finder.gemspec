@@ -2,19 +2,22 @@
 require 'version'
 
 Gem::Specification.new do |spec|
-  spec.name        = 'podcast-finder'
-  spec.platform    = Gem::Platform::RUBY
-  spec.version     = '0.0.1'
-  spec.licenses    = ['MIT']
+  spec.name           = 'podcast-finder'
+  spec.platform       = Gem::Platform::RUBY
+  spec.version        = PodcastFinder::VERSION
+  spec.license        = 'MIT'
 
-  spec.summary     = "CLI gem for finding NPR podcasts"
-  spec.description =
-    "Podcast Finder is a command-line gem that displays ongoing podcasts by NPR and NPR-affiliated stations. Browse by category, view podcast descriptions and episodes, and get links to listen online."
-  spec.authors     = ["Elyse Klova"]
-  spec.email       = ['elyse.klova@gmail.com']
+  spec.summary        = "CLI gem for finding NPR podcasts"
+  spec.description    =
+    "Podcast Finder is a CLI gem that displays ongoing podcasts by NPR and NPR-affiliated stations. Browse by category, view podcast descriptions and episodes, and get links to listen online."
+  spec.authors        = ["Elyse Klova"]
+  spec.email          = ['elyse.klova@gmail.com']
 
-  spec.homepage    = 'https://github.com/klovae/podcast-finder-gem'
-  spec.bindir      = 'bin'
+  spec.homepage       = 'https://github.com/klovae/podcast-finder-gem'
+
+  spec.files          =
+  spec.executables    = podcast-finder
+  spec.require_paths  = ["lib"]
 
   spec.post_install_message = "Thanks for installing! Happy listening."
 
