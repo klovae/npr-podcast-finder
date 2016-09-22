@@ -104,6 +104,7 @@ class CommandLineInterface
     self.get_input
     if @input.class == Fixnum && @input.between?(1, 16)
       @category_choice = Category.all[@input - 1]
+      puts "Loading podcasts from #{@category_choice.name}, please wait..."
       DataImporter.import_podcast_data(@category_choice)
       self.browse_category
     else
@@ -190,10 +191,12 @@ class CommandLineInterface
     DataImporter.import_episodes(@podcast_choice)
     if !@podcast_choice.episodes.empty?
       puts ""
-      puts "#{@podcast_choice.name} Episode List".colorize(:light_blue)
+      puts "#{@podcast_choice.name} Recent Episode List".colorize(:light_blue)
       @podcast_choice.list_episodes
       puts ""
-
+      puts "These are all the options currently available in Podcast Finder.".colorize(:light_blue)
+      puts "To see more, check out #{@podcast_choice.name} online at #{@podcast_choice.url}"
+      puts ""
       puts "Options:".colorize(:light_blue)
       puts "Select an episode (1-#{@podcast_choice.episodes.count}) to get a description and download link".colorize(:light_blue)
       puts "Type 'back' to return to podcast listing for #{@category_choice.name}".colorize(:light_blue)
@@ -211,14 +214,16 @@ class CommandLineInterface
 
   def choose_action_no_episodes
     self.get_input
+    self.proceed_based_on_input
     if @input == "BACK"
       @podcast_counter = 0
       self.browse_category
-    elsif @input == "MENU"
-      self.proceed_based_on_input
     else
-      self.proceed_based_on_input
-      self.choose_action_no_episodes unless @continue == "EXIT"
+      if @input == "MORE"
+        @input = "STUCK"
+        self.proceed_based_on_input
+        self.choose_action_no_episodes unless @continue == "EXIT"
+      end
     end
   end
 
@@ -235,7 +240,11 @@ class CommandLineInterface
       self.browse_category
     else
       self.proceed_based_on_input
-      self.choose_episode unless @continue == "EXIT"
+      if @input == "MORE"
+        @input = "STUCK"
+        self.proceed_based_on_input
+        self.choose_episode unless @continue == "EXIT"
+      end
     end
   end
 

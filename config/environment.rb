@@ -1,7 +1,8 @@
-require 'bundler/setup'
 require 'date'
-
-Bundler.require(:default, :development, :test)
+require 'open-uri'
+require 'nokogiri'
+require 'colorize'
+require 'require_all'
 
 module Concerns
   module Findable
