@@ -1,4 +1,4 @@
-require 'bundler/setup'
+require 'bundler'
 require 'date'
 
 Bundler.require(:default, :development, :test)
