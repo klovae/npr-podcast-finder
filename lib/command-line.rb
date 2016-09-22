@@ -52,6 +52,8 @@ class CommandLineInterface
     puts "--Type 'exit' at any time to quit the browser"
     puts "--Type 'menu' at any time to go back to the main category menu"
     puts "--Type 'help' if you need a quick reminder about the commands"
+    self.get_input
+    self.proceed_based_on_input
   end
 
   #methods for gets-ing, parsing and acting based on user input
@@ -161,6 +163,7 @@ class CommandLineInterface
 #methods for getting details on a specific podcast
   def display_podcast_info
     @podcast_choice = @category_choice.podcasts[@input - 1]
+    puts "Loading #{@podcast_choice.name}"
     DataImporter.import_description(@podcast_choice)
     puts ""
     @podcast_choice.list_data
@@ -182,12 +185,14 @@ class CommandLineInterface
     elsif @input == "MENU"
       self.proceed_based_on_input
     else
+      @input = "STUCK" unless @input == "EXIT"
       self.proceed_based_on_input
       self.choose_podcast_action unless @continue == "EXIT"
     end
   end
 
   def display_episode_list
+    puts "Getting episodes for #{@podcast_choice.name}"
     DataImporter.import_episodes(@podcast_choice)
     if !@podcast_choice.episodes.empty?
       puts ""
@@ -214,16 +219,15 @@ class CommandLineInterface
 
   def choose_action_no_episodes
     self.get_input
-    self.proceed_based_on_input
     if @input == "BACK"
       @podcast_counter = 0
       self.browse_category
+    elsif @input == "MENU"
+      self.proceed_based_on_input
     else
-      if @input == "MORE"
-        @input = "STUCK"
-        self.proceed_based_on_input
-        self.choose_action_no_episodes unless @continue == "EXIT"
-      end
+      @input = "STUCK" unless @input == "EXIT"
+      self.proceed_based_on_input
+      self.choose_action_no_episodes unless @continue == "EXIT"
     end
   end
 
@@ -242,9 +246,9 @@ class CommandLineInterface
       self.proceed_based_on_input
       if @input == "MORE"
         @input = "STUCK"
-        self.proceed_based_on_input
-        self.choose_episode unless @continue == "EXIT"
       end
+      self.proceed_based_on_input
+      self.choose_episode unless @continue == "EXIT"
     end
   end
 
@@ -270,6 +274,9 @@ class CommandLineInterface
       @episode_choice = nil
       self.browse_category
     else
+      if @input == "MORE"
+        @input = "STUCK"
+      end
       self.proceed_based_on_input
       self.choose_action_episode_info unless @continue == "EXIT"
     end
