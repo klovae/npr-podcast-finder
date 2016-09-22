@@ -1,9 +1,10 @@
 # coding: utf-8
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name           = 'podcast-finder'
-  spec.platform       = Gem::Platform::RUBY
-  spec.version        = '0.1.7'
+  spec.version        = '0.1.8'
   spec.license        = 'MIT'
 
   spec.summary        = "CLI gem for finding NPR podcasts"
