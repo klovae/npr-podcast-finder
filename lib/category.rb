@@ -37,14 +37,14 @@ class Category
   def list_podcasts(number)
     counter = 1 + number
     podcast_list_count = 0
-    until counter > (number + 5) do
+    until counter > (number + 10) do
       if counter <= self.podcasts.size
         podcast = self.podcasts[counter - 1]
         puts "(#{counter}) #{podcast.name}"
         counter += 1
         podcast_list_count += 1
       else
-        counter += 5
+        counter += 10
       end
     end
     podcast_list_count

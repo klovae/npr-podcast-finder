@@ -127,11 +127,11 @@ class CommandLineInterface
 
   def display_podcasts
     @listed_podcasts = @category_choice.list_podcasts(@podcast_counter)
-    if @listed_podcasts == 5
+    if @listed_podcasts == 10
       puts ""
       puts "Enter the number of the podcast you'd like to check out (1-#{@podcast_counter + @listed_podcasts})".colorize(:light_blue)
       puts "Type 'menu' to return to the category list".colorize(:light_blue)
-      puts "Type 'more' to see the next 5 podcasts".colorize(:light_blue)
+      puts "Type 'more' to see the next 10 podcasts".colorize(:light_blue)
     else
       puts ""
       puts "That's all the podcasts for this category!".colorize(:light_blue)
@@ -141,16 +141,16 @@ class CommandLineInterface
 
   def choose_podcast
     self.get_input
-    if @input.class == Fixnum && @input.between?(1, @podcast_counter + @listed_podcasts)
+    if @input.class == Fixnum && @input.between?(@podcast_counter, @podcast_counter + @listed_podcasts)
       self.display_podcast_info
-    elsif @input.class == Fixnum && !@input.between?(1, @podcast_counter + @listed_podcasts)
+    elsif @input.class == Fixnum && !@input.between?(@podcast_counter, @podcast_counter + @listed_podcasts)
       puts "Sorry, that's not an option. Please choose a number that corresponds to a podcast or type 'more' to see more podcasts.".colorize(:light_blue)
       self.choose_podcast
     elsif @input == "MENU"
       @category_choice = nil
       self.proceed_based_on_input
     elsif @input == "MORE"
-      @podcast_counter += 5
+      @podcast_counter += 10
       self.browse_category
     else
       self.proceed_based_on_input
