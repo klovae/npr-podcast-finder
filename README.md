@@ -1,2 +1,2 @@
-# npr-podcast-finder
-Command-line program to help listeners locate podcasts by subject, location, and recently updated
+# podcast-finder
+A command-line program to help listeners find new podcasts produced by NPR and NPR-affiliated stations. Browse categories, get podcast descriptions, and view most recent episodes.
