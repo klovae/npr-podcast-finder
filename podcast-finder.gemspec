@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name           = 'podcast-finder'
-  spec.version        = '0.1.8'
+  spec.version        = '0.1.9'
   spec.license        = 'MIT'
 
   spec.summary        = "CLI gem for finding NPR podcasts"
