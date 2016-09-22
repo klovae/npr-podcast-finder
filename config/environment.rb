@@ -2,7 +2,6 @@ require 'date'
 require 'open-uri'
 require 'nokogiri'
 require 'colorize'
-require 'require_all'
 
 module Concerns
   module Findable
@@ -12,4 +11,4 @@ module Concerns
   end
 end
 
-require_all 'lib'
+Dir["./lib/*.rb"].each {|file| require file }
