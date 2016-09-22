@@ -3,7 +3,7 @@
 Gem::Specification.new do |spec|
   spec.name           = 'podcast-finder'
   spec.platform       = Gem::Platform::RUBY
-  spec.version        = '0.1.2'
+  spec.version        = '0.1.3'
   spec.license        = 'MIT'
 
   spec.summary        = "CLI gem for finding NPR podcasts"
@@ -26,5 +26,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'bundler', '~> 1'
 
   spec.add_development_dependency 'rspec', '~> 3.5'
-  spec.add_development_dependency 'pry', '~> 0'
+  spec.add_development_dependency 'pry', '>= 0'
 end
