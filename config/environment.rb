@@ -11,4 +11,4 @@ module Concerns
   end
 end
 
-require_all './lib'
+require_all 'lib'
