@@ -3,7 +3,7 @@
 Gem::Specification.new do |spec|
   spec.name           = 'podcast-finder'
   spec.platform       = Gem::Platform::RUBY
-  spec.version        = '0.1.4'
+  spec.version        = '0.1.5'
   spec.license        = 'MIT'
 
   spec.summary        = "CLI gem for finding NPR podcasts"
